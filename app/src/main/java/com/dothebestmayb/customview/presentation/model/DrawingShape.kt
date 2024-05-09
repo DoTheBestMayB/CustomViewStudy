@@ -12,4 +12,8 @@ data class DrawingShape(
     override fun toString(): String {
         return "${this.javaClass.simpleName} ($id), $point, $size, $color, $transparent"
     }
+
+    companion object {
+        fun
+    }
 }

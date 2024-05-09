@@ -11,5 +11,13 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        setListener()
+    }
+
+    private fun setListener() {
+        binding.btnAddSquare.setOnClickListener {
+            binding.drawingPaper
+        }
     }
 }

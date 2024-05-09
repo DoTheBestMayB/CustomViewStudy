@@ -18,8 +18,7 @@
         custom:drawingColor="@color/black"
         custom:shape="line" />
 
-
-    <Button
+    <a
         android:id="@+id/btn_add_square"
         style="@style/BottomAddButtonStyle"
         android:layout_width="wrap_content"
@@ -27,9 +26,9 @@
         android:background="@drawable/border_add_shape"
         android:text="@string/square"
         android:textColor="@color/black"
-        app:iconTint="@color/black"
         app:icon="@drawable/baseline_crop_square_24"
         app:iconGravity="top"
+        app:iconTint="@color/black"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

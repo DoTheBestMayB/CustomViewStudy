@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">CustomView</string>
+    <string name="square">사각형</string>
 </resources>
