@@ -7,7 +7,8 @@ data class DrawingShape(
     val point: Point,
     val color: DrawingColor,
     val transparent: Transparent,
-    val id: String = UUID.randomUUID().toString(),
+    val type: DrawingType,
+    val id: String = UUID.randomUUID().toString()
 ) {
     override fun toString(): String {
         return "${this.javaClass.simpleName} ($id), $point, $size, $color, $transparent"
