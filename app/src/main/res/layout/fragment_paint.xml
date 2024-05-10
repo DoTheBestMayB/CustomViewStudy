@@ -11,6 +11,7 @@
         android:id="@+id/drawing_paper"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:contentDescription="@string/talkback_drawing_paper"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -20,10 +21,11 @@
 
 
     <Button
-        android:id="@+id/btn_add_square"
+        android:id="@+id/btn_add_rect"
         style="@style/BottomAddButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:contentDescription="@string/talkback_add_random_rect"
         android:background="@drawable/border_add_shape"
         android:text="@string/square"
         android:textColor="@color/black"

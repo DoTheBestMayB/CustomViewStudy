@@ -1,10 +1,12 @@
 package com.dothebestmayb.customview.presentation.ui.paint
 
+import android.accessibilityservice.AccessibilityService
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.view.accessibility.AccessibilityManager
 import androidx.core.view.doOnLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -18,6 +20,11 @@ class PaintFragment : Fragment() {
         get() = _binding!!
 
     private val viewModel: PaintViewModel by viewModels()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -38,7 +45,7 @@ class PaintFragment : Fragment() {
         binding.drawingPaper.doOnLayout {
             viewModel.setCanvasSize(binding.drawingPaper.width, binding.drawingPaper.height)
         }
-        binding.btnAddSquare.setOnClickListener {
+        binding.btnAddRect.setOnClickListener {
             viewModel.createRect()
         }
         binding.drawingPaper.setOnTouchListener { v, event ->
@@ -58,6 +65,7 @@ class PaintFragment : Fragment() {
                 }
 
                 MotionEvent.ACTION_UP -> {
+                    binding.drawingPaper.performClick()
                     viewModel.updateTouchEndPoint(pointX, pointY)
                 }
 

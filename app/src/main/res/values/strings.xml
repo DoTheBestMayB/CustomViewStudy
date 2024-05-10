@@ -3,4 +3,7 @@
     <string name="square">사각형</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="talkback_drawing_paper">Canvas 영역입니다.</string>
+    <string name="talkback_add_random_rect">사각형을 랜덤한 위치에 추가합니다.</string>
+    <string name="talkback_draw_shape_is_done">도형이 그려졌습니다.</string>
 </resources>

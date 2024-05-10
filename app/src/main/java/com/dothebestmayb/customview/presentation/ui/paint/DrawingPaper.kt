@@ -1,5 +1,6 @@
 package com.dothebestmayb.customview.presentation.ui.paint
 
+import android.accessibilityservice.AccessibilityService
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
@@ -7,6 +8,7 @@ import android.graphics.Paint
 import android.graphics.Rect
 import android.util.AttributeSet
 import android.view.View
+import android.widget.Toast
 import androidx.annotation.ColorInt
 import com.dothebestmayb.customview.R
 import com.dothebestmayb.customview.presentation.model.DrawingInfo
@@ -76,6 +78,12 @@ class DrawingPaper(context: Context, attrs: AttributeSet) : View(context, attrs)
     fun submitShapeInfo(drawingInfo: List<DrawingInfo>) {
         this.drawingInfo = drawingInfo
         invalidate()
+    }
+
+    override fun performClick(): Boolean {
+        super.performClick()
+        announceForAccessibility(context.getString(R.string.talkback_draw_shape_is_done))
+        return true
     }
 
     companion object {
