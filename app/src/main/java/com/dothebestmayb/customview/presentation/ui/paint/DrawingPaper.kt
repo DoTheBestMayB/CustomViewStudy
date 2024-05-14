@@ -11,6 +11,7 @@ import androidx.annotation.ColorInt
 import com.dothebestmayb.customview.R
 import com.dothebestmayb.customview.presentation.model.DrawingInfo
 import com.dothebestmayb.customview.presentation.model.DrawingType
+import com.dothebestmayb.customview.presentation.model.Transparent
 
 class DrawingPaper(context: Context, attrs: AttributeSet) : View(context, attrs) {
 
@@ -18,10 +19,12 @@ class DrawingPaper(context: Context, attrs: AttributeSet) : View(context, attrs)
     @ColorInt
     private var color: Int
     private var type: DrawingType
+    private var alpha: Transparent = Transparent.TEN
 
     private val paint: Paint
     private var drawingInfo: List<DrawingInfo> = listOf()
     private var tempRect: Rect? = null
+    private val rectForSelecting = Rect()
 
     init {
         context.theme.obtainStyledAttributes(
@@ -57,6 +60,9 @@ class DrawingPaper(context: Context, attrs: AttributeSet) : View(context, attrs)
         canvas.apply {
             val tRect = tempRect
             if (tRect != null) {
+                paint.color = color
+                paint.alpha = alpha.value
+                paint.style = Paint.Style.FILL
                 drawRect(tRect, paint)
             }
 
@@ -65,7 +71,21 @@ class DrawingPaper(context: Context, attrs: AttributeSet) : View(context, attrs)
                     is DrawingInfo.DrawingRectInfo -> {
                         paint.color = info.shape.color.colorValue
                         paint.alpha = info.shape.transparent.value
+                        paint.style = Paint.Style.FILL
                         drawRect(info.rect, paint)
+
+                        if (info.shape.clicked) {
+                            paint.style = Paint.Style.STROKE
+                            paint.color = info.shape.color.complementaryColor
+                            paint.alpha = Transparent.TEN.value
+                            rectForSelecting.set(
+                                info.shape.point.x - 1,
+                                info.shape.point.y - 1,
+                                info.shape.point.x + info.shape.size.width + 1,
+                                info.shape.point.y + info.shape.size.height + 1,
+                            )
+                            drawRect(rectForSelecting, paint)
+                        }
                     }
                 }
             }

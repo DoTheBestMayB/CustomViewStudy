@@ -11,6 +11,7 @@ import com.dothebestmayb.customview.presentation.model.DrawingType
 import com.dothebestmayb.customview.presentation.model.Point
 import com.dothebestmayb.customview.presentation.model.Size
 import com.dothebestmayb.customview.presentation.model.Transparent
+import kotlin.math.abs
 import kotlin.random.Random
 
 class PaintViewModel : ViewModel() {
@@ -81,6 +82,36 @@ class PaintViewModel : ViewModel() {
     fun updateTouchEndPoint(pointX: Float, pointY: Float) {
         lastX = pointX
         lastY = pointY
+        _tempRect.value = null
+        if (abs(lastX - firstX) < 10 && abs(lastY - firstY) < 10) {
+            checkExistingShape(lastX, lastY)
+        } else {
+            createNewShape()
+        }
+    }
+
+    private fun checkExistingShape(x: Float, y: Float) {
+        val information = _drawingInfo.value?.toMutableList() ?: return
+        var isFind = false
+        for (idx in information.lastIndex downTo 0) {
+            when (val drawingInfo = information[idx]) {
+                is DrawingInfo.DrawingRectInfo -> {
+                    if (isFind) {
+                        val new = drawingInfo.copy(shape = drawingInfo.shape.copy(clicked = false))
+                        information[idx] = new
+                        continue
+                    }
+                    val clicked = drawingInfo.shape.isClicked(x.toInt(), y.toInt())
+                    val new = drawingInfo.copy(shape = drawingInfo.shape.copy(clicked = clicked))
+                    information[idx] = new
+                    isFind = clicked
+                }
+            }
+        }
+        _drawingInfo.value = information
+    }
+
+    private fun createNewShape() {
         val shape = DrawingShape(
             size = Size(
                 width = lastX.toInt() - firstX.toInt(),
@@ -105,7 +136,6 @@ class PaintViewModel : ViewModel() {
             )
         }
         information.add(info)
-        _tempRect.value = null
         _drawingInfo.value = information
     }
 
