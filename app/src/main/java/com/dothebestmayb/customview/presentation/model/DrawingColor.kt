@@ -7,7 +7,7 @@ data class DrawingColor(
     val g: UByte,
     val b: UByte,
     @ColorInt val colorValue: Int = (r.toInt() shl 16) or (g.toInt() shl 8) or b.toInt() or (0xFF shl 24),
-    @ColorInt val complementaryColor: Int = ((255-r.toInt()) shl 16) or ((255-g.toInt()) shl 8) or (255 - b.toInt()) or (0xFF shl 24),
+    @ColorInt val complementaryColor: Int = ((255 - r.toInt()) shl 16) or ((255 - g.toInt()) shl 8) or (255 - b.toInt()) or (0xFF shl 24),
 ) {
     override fun toString(): String {
         return "#%02X%02X%02X".format(r.toInt(), g.toInt(), b.toInt())
