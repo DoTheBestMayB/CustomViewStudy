@@ -10,6 +10,6 @@ data class DrawingColor(
     @ColorInt val complementaryColor: Int = ((255-r.toInt()) shl 16) or ((255-g.toInt()) shl 8) or (255 - b.toInt()) or (0xFF shl 24),
 ) {
     override fun toString(): String {
-        return "R:$r, G:$g, B:$b"
+        return "#%02X%02X%02X".format(r.toInt(), g.toInt(), b.toInt())
     }
 }

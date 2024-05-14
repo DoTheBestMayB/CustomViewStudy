@@ -19,6 +19,7 @@ class PaintViewModel : ViewModel() {
 
     private val random = Random(System.currentTimeMillis())
 
+    // 아래 정보를 Data class로 모델링해서 가지고 있기
     private var width = -1
     private var height = -1
     private var firstX = -1f
@@ -37,6 +38,10 @@ class PaintViewModel : ViewModel() {
     private val _drawingInfo = MutableLiveData<List<DrawingInfo>>()
     val drawingInfo: LiveData<List<DrawingInfo>>
         get() = _drawingInfo
+
+    private val _selectedDrawingInfo = MutableLiveData<DrawingInfo?>()
+    val selectedDrawingInfo: LiveData<DrawingInfo?>
+        get() = _selectedDrawingInfo
 
     fun createRect() {
         val size = Size(Random.nextInt(width), Random.nextInt(height))
@@ -104,9 +109,15 @@ class PaintViewModel : ViewModel() {
                     val clicked = drawingInfo.shape.isClicked(x.toInt(), y.toInt())
                     val new = drawingInfo.copy(shape = drawingInfo.shape.copy(clicked = clicked))
                     information[idx] = new
-                    isFind = clicked
+                    if (clicked) {
+                        _selectedDrawingInfo.value = new
+                        isFind = true
+                    }
                 }
             }
+        }
+        if (isFind.not()) {
+            _selectedDrawingInfo.value = null
         }
         _drawingInfo.value = information
     }

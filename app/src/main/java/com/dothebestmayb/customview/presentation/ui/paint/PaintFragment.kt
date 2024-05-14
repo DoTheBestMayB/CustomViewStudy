@@ -84,6 +84,20 @@ class PaintFragment : Fragment() {
         viewModel.drawingInfo.observe(viewLifecycleOwner) {
             binding.drawingPaper.submitShapeInfo(it)
         }
+        viewModel.selectedDrawingInfo.observe(viewLifecycleOwner) {
+            if (it == null) {
+                binding.btnBackgroundColor.isEnabled = false
+                binding.sliderTransparent.isEnabled = false
+                binding.btnBackgroundColor.text = null
+                binding.sliderTransparent.value = 5f
+                return@observe
+            }
+            binding.btnBackgroundColor.setTextColor(it.shape.color.colorValue)
+            binding.btnBackgroundColor.text = it.shape.color.toString()
+            binding.sliderTransparent.value = it.shape.transparent.indicatorValue.toFloat()
+            binding.btnBackgroundColor.isEnabled = true
+            binding.sliderTransparent.isEnabled = true
+        }
     }
 
     override fun onDestroyView() {
