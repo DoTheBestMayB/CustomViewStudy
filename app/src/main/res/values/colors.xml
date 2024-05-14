@@ -4,4 +4,5 @@
     <color name="white">#FFFFFFFF</color>
     <color name="saintSoftBlue">#D2DFF3</color>
     <color name="shapeAddButtonFilled">#DBF2FA</color>
+    <color name="border">#E0E5F0</color>
 </resources>

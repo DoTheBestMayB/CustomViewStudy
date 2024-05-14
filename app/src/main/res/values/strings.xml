@@ -8,4 +8,6 @@
     <string name="talkback_draw_shape_is_done">도형이 그려졌습니다.</string>
     <string name="background_color">배경색</string>
     <string name="transparent">투명도</string>
+    <string name="image">사진</string>
+    <string name="talkback_add_image">사진을 추가합니다.</string>
 </resources>

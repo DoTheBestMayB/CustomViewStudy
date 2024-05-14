@@ -31,19 +31,30 @@
 
     <Button
         android:id="@+id/btn_add_rect"
-        style="@style/BottomAddButtonStyle"
+        style="@style/BottomButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/border_add_shape"
         android:contentDescription="@string/talkback_add_random_rect"
         android:text="@string/square"
-        android:textColor="@color/black"
         app:icon="@drawable/baseline_crop_square_24"
-        app:iconGravity="top"
-        app:iconTint="@color/black"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/btn_add_image"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:shapeAppearanceOverlay="@style/left_rounded" />
+
+    <Button
+        android:id="@+id/btn_add_image"
+        style="@style/BottomButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/talkback_add_image"
+        android:text="@string/image"
+        app:icon="@drawable/baseline_image_24"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toEndOf="@id/btn_add_rect"
+        app:shapeAppearanceOverlay="@style/right_rounded" />
 
     <View
         android:id="@+id/v_side"

@@ -6,13 +6,24 @@
 
     <style name="Theme.CustomView" parent="Base.Theme.CustomView" />
 
-    <style name="BottomAddButtonStyle">
-        <item name="cornerFamily">rounded</item>
-        <item name="cornerFamilyBottomRight">cut</item>
-        <item name="cornerFamilyBottomLeft">cut</item>
-        <item name="cornerSizeTopLeft">16dp</item>
-        <item name="cornerSizeTopRight">16dp</item>
-        <item name="strokeColor">@color/saintSoftBlue</item>
+    <style name="BottomButtonStyle">
+        <item name="strokeColor">@color/border</item>
+        <item name="strokeWidth">1dp</item>
+        <item name="iconGravity">top</item>
+        <item name="iconTint">@color/black</item>
+        <item name="android:textColor">@color/black</item>
         <item name="backgroundTint">@color/shapeAddButtonFilled</item>
+    </style>
+
+    <style name="right_rounded">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">0dp</item>
+        <item name="cornerSizeTopRight">8dp</item>
+    </style>
+
+    <style name="left_rounded">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">0dp</item>
+        <item name="cornerSizeTopLeft">8dp</item>
     </style>
 </resources>
