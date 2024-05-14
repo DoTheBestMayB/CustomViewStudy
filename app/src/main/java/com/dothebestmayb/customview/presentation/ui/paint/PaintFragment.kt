@@ -73,6 +73,9 @@ class PaintFragment : Fragment() {
             }
             return@setOnTouchListener true
         }
+        binding.btnBackgroundColor.setOnClickListener {
+            viewModel.changeSelectShapeColor()
+        }
     }
 
     private fun setObserve() {

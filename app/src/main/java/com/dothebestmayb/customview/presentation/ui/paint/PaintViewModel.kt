@@ -154,4 +154,23 @@ class PaintViewModel : ViewModel() {
         this.width = width
         this.height = height
     }
+
+    fun changeSelectShapeColor() {
+        val information = _drawingInfo.value?.toMutableList() ?: return
+        val selectedDrawing = _selectedDrawingInfo.value ?: return
+
+        val idx = information.indexOfFirst {
+            it == selectedDrawing
+        }
+        val newDrawing = when (selectedDrawing) {
+            is DrawingInfo.DrawingRectInfo -> selectedDrawing.copy(
+                shape = selectedDrawing.shape.copy(
+                    color = DrawingColor.random(random)
+                )
+            )
+        }
+        information[idx] = newDrawing
+        _drawingInfo.value = information
+        _selectedDrawingInfo.value = newDrawing
+    }
 }

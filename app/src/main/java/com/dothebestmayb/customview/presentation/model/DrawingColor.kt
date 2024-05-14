@@ -1,6 +1,7 @@
 package com.dothebestmayb.customview.presentation.model
 
 import androidx.annotation.ColorInt
+import kotlin.random.Random
 
 data class DrawingColor(
     val r: UByte,
@@ -11,5 +12,13 @@ data class DrawingColor(
 ) {
     override fun toString(): String {
         return "#%02X%02X%02X".format(r.toInt(), g.toInt(), b.toInt())
+    }
+
+    companion object {
+        fun random(random: Random) = DrawingColor(
+            r = random.nextInt(256).toUByte(),
+            g = random.nextInt(256).toUByte(),
+            b = random.nextInt(256).toUByte(),
+        )
     }
 }
