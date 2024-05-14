@@ -1,6 +1,7 @@
 package com.dothebestmayb.customview.presentation.ui.paint
 
 import android.graphics.Rect
+import androidx.annotation.FloatRange
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -166,6 +167,25 @@ class PaintViewModel : ViewModel() {
             is DrawingInfo.DrawingRectInfo -> selectedDrawing.copy(
                 shape = selectedDrawing.shape.copy(
                     color = DrawingColor.random(random)
+                )
+            )
+        }
+        information[idx] = newDrawing
+        _drawingInfo.value = information
+        _selectedDrawingInfo.value = newDrawing
+    }
+
+    fun changeSelectShapeTransparent(@FloatRange(1.0, 10.0) value: Float) {
+        val information = _drawingInfo.value?.toMutableList() ?: return
+        val selectedDrawing = _selectedDrawingInfo.value ?: return
+
+        val idx = information.indexOfFirst {
+            it == selectedDrawing
+        }
+        val newDrawing = when (selectedDrawing) {
+            is DrawingInfo.DrawingRectInfo -> selectedDrawing.copy(
+                shape = selectedDrawing.shape.copy(
+                    transparent = Transparent.from(value.toInt())
                 )
             )
         }

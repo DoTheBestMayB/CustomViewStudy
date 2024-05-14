@@ -1,5 +1,7 @@
 package com.dothebestmayb.customview.presentation.model
 
+import androidx.annotation.IntRange
+
 enum class Transparent(val value: Int, val indicatorValue: Int) {
     ONE(255 / 10, 1),
     TWO(255 / 9, 2),
@@ -14,5 +16,10 @@ enum class Transparent(val value: Int, val indicatorValue: Int) {
 
     override fun toString(): String {
         return "Alpha: $value"
+    }
+
+    companion object {
+        fun from(@IntRange(1, 10) indicatorValue: Int) =
+            entries.first { it.indicatorValue == indicatorValue }
     }
 }

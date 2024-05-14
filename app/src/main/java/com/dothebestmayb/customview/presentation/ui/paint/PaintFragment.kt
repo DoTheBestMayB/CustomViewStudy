@@ -76,6 +76,12 @@ class PaintFragment : Fragment() {
         binding.btnBackgroundColor.setOnClickListener {
             viewModel.changeSelectShapeColor()
         }
+        binding.sliderTransparent.addOnChangeListener { slider, value, fromUser ->
+            if (fromUser.not()) {
+                return@addOnChangeListener
+            }
+            viewModel.changeSelectShapeTransparent(value)
+        }
     }
 
     private fun setObserve() {
