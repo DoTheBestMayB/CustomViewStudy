@@ -11,9 +11,10 @@
         android:id="@+id/drawing_paper"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginBottom="12dp"
         android:contentDescription="@string/talkback_drawing_paper"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/btn_add_rect"
+        app:layout_constraintEnd_toStartOf="@id/guideline_side"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         custom:drawingColor="@color/black"
@@ -25,8 +26,8 @@
         style="@style/BottomAddButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:contentDescription="@string/talkback_add_random_rect"
         android:background="@drawable/border_add_shape"
+        android:contentDescription="@string/talkback_add_random_rect"
         android:text="@string/square"
         android:textColor="@color/black"
         app:icon="@drawable/baseline_crop_square_24"
@@ -35,4 +36,76 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <View
+        android:id="@+id/v_side"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/shapeAddButtonFilled"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/guideline_side"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_background_color"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="18dp"
+        android:text="@string/background_color"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@id/v_side"
+        app:layout_constraintTop_toTopOf="@id/v_side" />
+
+    <Button
+        android:id="@+id/btn_background_color"
+        style="?attr/materialButtonOutlinedStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="12dp"
+        android:layout_marginTop="12dp"
+        android:enabled="false"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/guideline_side"
+        app:layout_constraintTop_toBottomOf="@id/tv_background_color"
+        tools:text="#D6DFE9"
+        tools:textColor="#D6DFE9" />
+
+    <TextView
+        android:id="@+id/tv_transparent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="18dp"
+        android:text="@string/transparent"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@id/v_side"
+        app:layout_constraintTop_toBottomOf="@id/btn_background_color" />
+
+    <com.google.android.material.slider.Slider
+        android:id="@+id/slider_transparent"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="12dp"
+        android:enabled="false"
+        android:stepSize="1"
+        android:valueFrom="1"
+        android:value="5"
+        android:valueTo="10"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/guideline_side"
+        app:layout_constraintTop_toBottomOf="@id/tv_transparent"
+        app:thumbHeight="28dp"
+        app:trackColor="@color/saintSoftBlue" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_side"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.85" />
 </androidx.constraintlayout.widget.ConstraintLayout>
