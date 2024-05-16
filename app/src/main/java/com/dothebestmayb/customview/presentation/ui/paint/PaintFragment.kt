@@ -1,14 +1,19 @@
 package com.dothebestmayb.customview.presentation.ui.paint
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.view.doOnLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import com.dothebestmayb.customview.R
 import com.dothebestmayb.customview.databinding.FragmentPaintBinding
+import com.dothebestmayb.customview.presentation.model.AlertMessageType
+import com.dothebestmayb.customview.presentation.ui.paint.model.GameType
 
 
 class PaintFragment : Fragment() {
@@ -18,10 +23,17 @@ class PaintFragment : Fragment() {
         get() = _binding!!
 
     private val viewModel: PaintViewModel by viewModels()
+    private val paintAdapter = PaintAdapter({
+        viewModel.onClick(it)
+    }, {
+        viewModel.addVoteItem(it)
+    })
+    private val votingAdapter = VotingAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+//        viewModel.setGameType(GameType.SINGLE)
     }
 
     override fun onCreateView(
@@ -35,8 +47,14 @@ class PaintFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setRecyclerView()
         setListener()
         setObserve()
+    }
+
+    private fun setRecyclerView() {
+        binding.rvItemBoard.adapter = paintAdapter
+        binding.voteView.rvVoteStatus.adapter = votingAdapter
     }
 
     private fun setListener() {
@@ -90,6 +108,7 @@ class PaintFragment : Fragment() {
         }
         viewModel.drawingInfo.observe(viewLifecycleOwner) {
             binding.drawingPaper.submitShapeInfo(it)
+            paintAdapter.submitList(it)
         }
         viewModel.selectedDrawingInfo.observe(viewLifecycleOwner) {
             if (it == null) {
@@ -104,6 +123,31 @@ class PaintFragment : Fragment() {
             binding.sliderTransparent.value = it.shape.transparent.indicatorValue.toFloat()
             binding.btnBackgroundColor.isEnabled = true
             binding.sliderTransparent.isEnabled = true
+        }
+        viewModel.alertMessage.observe(viewLifecycleOwner) { event ->
+            event.getContentIfNotHandled()?.let {
+                val message = when (it) {
+                    AlertMessageType.VOTING_IS_UNDERWAY -> getString(R.string.vote_is_already_underway)
+                }
+                Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+            }
+        }
+        viewModel.currentVotingItem.observe(viewLifecycleOwner) {
+            if (it == null) {
+                binding.voteView.ivItem.setImageDrawable(null)
+                // RecyclerView 아이템 null처리
+                binding.voteView.btnAccept.isEnabled = false
+                binding.voteView.tvName.text = null
+                binding.voteView.btnDecline.isEnabled = false
+                return@observe
+            }
+            binding.voteView.ivItem.setImageResource(R.drawable.sample_board_item) // TODO : 실제 이미지로 변경
+            binding.voteView.tvName.text = it.shape.name
+            binding.voteView.btnAccept.isEnabled = true
+            binding.voteView.btnDecline.isEnabled = true
+        }
+        viewModel.remainVotingTime.observe(viewLifecycleOwner) {
+            binding.voteView.progressRemainingTime.setProgress(it, true)
         }
     }
 

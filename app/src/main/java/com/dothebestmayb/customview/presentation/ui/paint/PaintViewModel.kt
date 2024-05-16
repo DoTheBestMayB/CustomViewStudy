@@ -5,13 +5,19 @@ import androidx.annotation.FloatRange
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.dothebestmayb.customview.presentation.model.AlertMessageType
 import com.dothebestmayb.customview.presentation.model.DrawingColor
 import com.dothebestmayb.customview.presentation.model.DrawingInfo
 import com.dothebestmayb.customview.presentation.model.DrawingShape
 import com.dothebestmayb.customview.presentation.model.DrawingType
+import com.dothebestmayb.customview.presentation.model.Event
 import com.dothebestmayb.customview.presentation.model.Point
 import com.dothebestmayb.customview.presentation.model.Size
 import com.dothebestmayb.customview.presentation.model.Transparent
+import com.dothebestmayb.customview.presentation.ui.paint.model.GameType
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlin.math.abs
 import kotlin.random.Random
 
@@ -43,6 +49,24 @@ class PaintViewModel : ViewModel() {
     private val _selectedDrawingInfo = MutableLiveData<DrawingInfo?>()
     val selectedDrawingInfo: LiveData<DrawingInfo?>
         get() = _selectedDrawingInfo
+
+    private val _currentVotingItem = MutableLiveData<DrawingInfo?>()
+    val currentVotingItem: LiveData<DrawingInfo?>
+        get() = _currentVotingItem
+
+    private val _alertMessage = MutableLiveData<Event<AlertMessageType>>()
+    val alertMessage: LiveData<Event<AlertMessageType>>
+        get() = _alertMessage
+
+    private val _remainVotingTime = MutableLiveData<Int>()
+    val remainVotingTime: LiveData<Int>
+        get() = _remainVotingTime
+
+    private var gameType: GameType = GameType.SINGLE
+
+    fun setGameType(type: GameType) {
+        gameType = type
+    }
 
     fun createRect() {
         val size = Size(Random.nextInt(width), Random.nextInt(height))
@@ -146,6 +170,8 @@ class PaintViewModel : ViewModel() {
                     shape.point.y + shape.size.height
                 )
             )
+
+            DrawingType.UNKNOWN -> TODO()
         }
         information.add(info)
         _drawingInfo.value = information
@@ -192,5 +218,47 @@ class PaintViewModel : ViewModel() {
         information[idx] = newDrawing
         _drawingInfo.value = information
         _selectedDrawingInfo.value = newDrawing
+    }
+
+    fun onClick(drawingInfo: DrawingInfo) {
+        val information = _drawingInfo.value?.toMutableList() ?: return
+
+        for (idx in information.indices) {
+            val item = information[idx]
+            val clicked = item == drawingInfo
+
+            val newItem = when (item) {
+                is DrawingInfo.DrawingRectInfo -> item.copy(
+                    shape = item.shape.copy(
+                        clicked = clicked
+                    )
+                )
+            }
+            information[idx] = newItem
+            if (clicked) {
+                _selectedDrawingInfo.value = newItem
+            }
+        }
+        _drawingInfo.value = information
+    }
+
+    fun addVoteItem(drawingInfo: DrawingInfo) {
+        if (_currentVotingItem.value != null) {
+            _alertMessage.value = Event(AlertMessageType.VOTING_IS_UNDERWAY)
+            return
+        }
+        _currentVotingItem.value = drawingInfo
+        viewModelScope.launch {
+            var count = VOTING_TOTAL_TIME
+            while (count > 0) {
+                delay(100)
+                count -= 100
+                _remainVotingTime.value = 100 * count / VOTING_TOTAL_TIME
+            }
+            _currentVotingItem.value = null
+        }
+    }
+    companion object {
+        private const val VOTING_TOTAL_TIME = 20_000
     }
 }

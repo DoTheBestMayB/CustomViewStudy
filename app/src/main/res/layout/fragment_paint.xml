@@ -55,6 +55,7 @@
         tools:listitem="@layout/item_for_board" />
 
     <include
+        android:id="@+id/vote_view"
         layout="@layout/vote_view"
         android:layout_width="0dp"
         android:layout_height="0dp"
