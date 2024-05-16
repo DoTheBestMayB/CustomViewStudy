@@ -26,4 +26,9 @@
         <item name="cornerSize">0dp</item>
         <item name="cornerSizeTopLeft">8dp</item>
     </style>
+
+    <style name="no_rounded">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">0dp</item>
+    </style>
 </resources>

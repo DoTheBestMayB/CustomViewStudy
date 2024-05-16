@@ -7,6 +7,62 @@
     android:layout_height="match_parent"
     tools:context=".presentation.ui.paint.PaintFragment">
 
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_side"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.85" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_top"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.2" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_vote"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.65" />
+
+    <TextView
+        android:id="@+id/tv_board"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/border_for_board_item"
+        android:gravity="center"
+        android:text="@string/packing_item"
+        android:paddingVertical="3dp"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="@id/guideline_vote"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_item_board"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+        app:layout_constraintBottom_toBottomOf="@id/guideline_top"
+        app:layout_constraintEnd_toEndOf="@id/guideline_vote"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_board"
+        app:spanCount="3"
+        tools:listitem="@layout/item_for_board" />
+
+    <include
+        layout="@layout/vote_view"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="@id/guideline_top"
+        app:layout_constraintEnd_toEndOf="@id/guideline_side"
+        app:layout_constraintStart_toStartOf="@id/guideline_vote"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <com.dothebestmayb.customview.presentation.ui.paint.DrawingPaper
         android:id="@+id/drawing_paper"
         android:layout_width="0dp"
@@ -16,7 +72,7 @@
         app:layout_constraintBottom_toTopOf="@id/btn_add_rect"
         app:layout_constraintEnd_toStartOf="@id/guideline_side"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/guideline_top"
         custom:drawingColor="@color/black"
         custom:shape="line" />
 
@@ -120,11 +176,4 @@
         app:layout_constraintTop_toBottomOf="@id/tv_transparent"
         app:thumbHeight="28dp"
         app:trackColor="@color/saintSoftBlue" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline_side"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.85" />
 </androidx.constraintlayout.widget.ConstraintLayout>

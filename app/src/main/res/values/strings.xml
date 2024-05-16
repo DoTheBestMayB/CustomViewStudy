@@ -10,4 +10,6 @@
     <string name="transparent">투명도</string>
     <string name="image">사진</string>
     <string name="talkback_add_image">사진을 추가합니다.</string>
+    <string name="vote_window">투표창</string>
+    <string name="packing_item">준비물</string>
 </resources>

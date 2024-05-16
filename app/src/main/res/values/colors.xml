@@ -5,4 +5,7 @@
     <color name="saintSoftBlue">#D2DFF3</color>
     <color name="shapeAddButtonFilled">#DBF2FA</color>
     <color name="border">#E0E5F0</color>
+    <color name="vote_accept">#02AF30</color>
+    <color name="vote_decline">#A00C0F</color>
+    <color name="vote_indicator">#00B6B4</color>
 </resources>

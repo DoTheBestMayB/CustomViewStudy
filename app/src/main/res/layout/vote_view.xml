@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/border_for_board_item">
+
+    <TextView
+        android:id="@+id/tv_vote"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/border_for_board_item"
+        android:gravity="center"
+        android:paddingVertical="3dp"
+        android:text="@string/vote_window"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.progressindicator.LinearProgressIndicator
+        android:id="@+id/progress_remaining_time"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="3dp"
+        app:indicatorTrackGapSize="0dp"
+        android:progress="0"
+        app:indicatorColor="@color/vote_indicator"
+        app:indicatorDirectionLinear="startToEnd"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_vote"
+        app:trackColor="@color/border"
+        app:trackCornerRadius="0dp"
+        app:trackStopIndicatorSize="0dp"
+        app:trackThickness="8dp"
+        tools:progress="50" />
+
+    <ImageView
+        android:id="@+id/iv_item"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginHorizontal="3dp"
+        android:adjustViewBounds="true"
+        android:scaleType="fitCenter"
+        app:layout_constraintBottom_toTopOf="@id/rv_vote_status"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/progress_remaining_time"
+        tools:src="@drawable/sample_board_item" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_vote_status"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintBottom_toTopOf="@id/btn_decline"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:listitem="@layout/item_for_vote" />
+
+    <Button
+        android:id="@+id/btn_accept"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="3dp"
+        android:layout_marginBottom="-1dp"
+        android:enabled="false"
+        android:backgroundTint="@color/vote_accept"
+        android:text="찬성"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/btn_decline"
+        app:layout_constraintStart_toStartOf="parent"
+        app:shapeAppearanceOverlay="@style/no_rounded" />
+
+    <Button
+        android:id="@+id/btn_decline"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="3dp"
+        android:layout_marginBottom="-1dp"
+        android:enabled="false"
+        android:backgroundTint="@color/vote_decline"
+        android:text="반대"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/btn_accept"
+        app:shapeAppearanceOverlay="@style/no_rounded" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
