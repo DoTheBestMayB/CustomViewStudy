@@ -7,4 +7,8 @@ data class Size(
     override fun toString(): String {
         return "W$width, H$height"
     }
+
+    companion object {
+        val Empty = Size(Int.MIN_VALUE, Int.MIN_VALUE)
+    }
 }

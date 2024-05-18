@@ -16,6 +16,7 @@ import com.dothebestmayb.customview.presentation.ui.paint.model.Point
 import com.dothebestmayb.customview.presentation.ui.paint.model.Size
 import com.dothebestmayb.customview.presentation.ui.paint.model.Transparent
 import com.dothebestmayb.customview.presentation.ui.paint.model.GameType
+import com.dothebestmayb.customview.presentation.ui.paint.model.TouchState
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.math.abs
@@ -27,12 +28,8 @@ class PaintViewModel : ViewModel() {
     private val random = Random(System.currentTimeMillis())
 
     // 아래 정보를 Data class로 모델링해서 가지고 있기
-    private var width = -1
-    private var height = -1
-    private var firstX = -1f
-    private var firstY = -1f
-    private var lastX = -1f
-    private var lastY = -1f
+    private var canvasSize: Size = Size.Empty
+    private var touchState = TouchState.Empty
 
     private var color = DrawingColor(0u, 0u, 0u)
     private var transParent = Transparent.TEN
@@ -69,10 +66,10 @@ class PaintViewModel : ViewModel() {
     }
 
     fun createRect() {
-        val size = Size(Random.nextInt(width), Random.nextInt(height))
+        val size = Size(Random.nextInt(canvasSize.width), Random.nextInt(canvasSize.height))
         val point = Point(
-            Random.nextInt(width - size.width),
-            Random.nextInt(height - size.height),
+            Random.nextInt(canvasSize.width - size.width),
+            Random.nextInt(canvasSize.height - size.height),
         )
         val color = DrawingColor(
             r = Random.nextInt(256).toUByte(),
@@ -99,22 +96,28 @@ class PaintViewModel : ViewModel() {
     }
 
     fun updateTouchStartPoint(pointX: Float, pointY: Float) {
-        firstX = pointX
-        firstY = pointY
+        touchState = TouchState(
+            start = Point(x = pointX.toInt(), y = pointY.toInt()),
+            end = Point.Empty,
+        )
     }
 
     fun updateTouchMove(pointX: Float, pointY: Float) {
-        lastX = pointX
-        lastY = pointY
-        _tempRect.value = Rect(firstX.toInt(), firstY.toInt(), lastX.toInt(), lastY.toInt())
+        touchState = touchState.copy(end=Point(x = pointX.toInt(), y = pointY.toInt()))
+
+        _tempRect.value = Rect(
+            touchState.start.x,
+            touchState.start.y,
+            touchState.end.x,
+            touchState.end.y
+        )
     }
 
     fun updateTouchEndPoint(pointX: Float, pointY: Float) {
-        lastX = pointX
-        lastY = pointY
+        touchState = touchState.copy(end=Point(x = pointX.toInt(), y = pointY.toInt()))
         _tempRect.value = null
-        if (abs(lastX - firstX) < 10 && abs(lastY - firstY) < 10) {
-            checkExistingShape(lastX, lastY)
+        if (abs(touchState.width) < 10 && abs(touchState.height) < 10) {
+            checkExistingShape(pointY, pointX)
         } else {
             createNewShape()
         }
@@ -150,10 +153,10 @@ class PaintViewModel : ViewModel() {
     private fun createNewShape() {
         val shape = DrawingShape(
             size = Size(
-                width = lastX.toInt() - firstX.toInt(),
-                height = lastY.toInt() - firstY.toInt()
+                width = touchState.width,
+                height = touchState.height
             ),
-            point = Point(x = firstX.toInt(), y = firstY.toInt()),
+            point = touchState.start,
             color = color,
             transparent = transParent,
             type = DrawingType.RECT,
@@ -178,8 +181,7 @@ class PaintViewModel : ViewModel() {
     }
 
     fun setCanvasSize(width: Int, height: Int) {
-        this.width = width
-        this.height = height
+        canvasSize = Size(width, height)
     }
 
     fun changeSelectShapeColor() {

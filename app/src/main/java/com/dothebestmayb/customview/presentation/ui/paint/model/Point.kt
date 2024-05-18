@@ -7,4 +7,8 @@ data class Point(
     override fun toString(): String {
         return "X:$x, Y:$y"
     }
+
+    companion object {
+        val Empty = Point(Int.MIN_VALUE, Int.MIN_VALUE)
+    }
 }
