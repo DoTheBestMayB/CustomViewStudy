@@ -113,7 +113,7 @@ class PaintViewModel : ViewModel() {
         touchState = touchState.copy(end = Point(x = pointX.toInt(), y = pointY.toInt()))
         _tempRect.value = null
         if (checkClickGesture(touchState)) {
-            handleClickGesture(pointY, pointX)
+            handleClickGesture(pointX, pointY)
         } else {
             createNewShape()
         }
