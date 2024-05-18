@@ -1,4 +1,4 @@
-package com.dothebestmayb.customview.presentation.ui.paint
+package com.dothebestmayb.customview.presentation.ui.paint.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.dothebestmayb.customview.databinding.ItemForVoteBinding
-import com.dothebestmayb.customview.presentation.model.VotingState
+import com.dothebestmayb.customview.presentation.ui.paint.model.VotingState
 
 class VotingAdapter : ListAdapter<VotingState, RecyclerView.ViewHolder>(diff) {
 

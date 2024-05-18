@@ -1,4 +1,4 @@
-package com.dothebestmayb.customview.presentation.model
+package com.dothebestmayb.customview.presentation.ui.paint.model
 
 enum class DrawingType(val typeNum: Int) {
     UNKNOWN(-1), LINE(0), RECT(1);

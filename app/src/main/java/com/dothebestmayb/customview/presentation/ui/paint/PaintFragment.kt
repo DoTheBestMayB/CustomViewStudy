@@ -1,7 +1,6 @@
 package com.dothebestmayb.customview.presentation.ui.paint
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -12,8 +11,9 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.dothebestmayb.customview.R
 import com.dothebestmayb.customview.databinding.FragmentPaintBinding
-import com.dothebestmayb.customview.presentation.model.AlertMessageType
-import com.dothebestmayb.customview.presentation.ui.paint.model.GameType
+import com.dothebestmayb.customview.presentation.ui.paint.adapter.PaintAdapter
+import com.dothebestmayb.customview.presentation.ui.paint.adapter.VotingAdapter
+import com.dothebestmayb.customview.presentation.ui.paint.model.AlertMessageType
 
 
 class PaintFragment : Fragment() {

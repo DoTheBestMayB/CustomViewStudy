@@ -1,4 +1,4 @@
-package com.dothebestmayb.customview.presentation.model
+package com.dothebestmayb.customview.presentation.ui.paint.model
 
 import java.util.UUID
 

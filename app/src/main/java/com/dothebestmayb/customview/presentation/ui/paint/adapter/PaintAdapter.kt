@@ -1,4 +1,4 @@
-package com.dothebestmayb.customview.presentation.ui.paint
+package com.dothebestmayb.customview.presentation.ui.paint.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -6,8 +6,8 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.dothebestmayb.customview.databinding.ItemForBoardBinding
-import com.dothebestmayb.customview.presentation.model.DrawingInfo
-import com.dothebestmayb.customview.presentation.model.DrawingType
+import com.dothebestmayb.customview.presentation.ui.paint.model.DrawingInfo
+import com.dothebestmayb.customview.presentation.ui.paint.model.DrawingType
 
 class PaintAdapter(
     private val onItemClick: (DrawingInfo) -> Unit,

@@ -9,9 +9,9 @@ import android.util.AttributeSet
 import android.view.View
 import androidx.annotation.ColorInt
 import com.dothebestmayb.customview.R
-import com.dothebestmayb.customview.presentation.model.DrawingInfo
-import com.dothebestmayb.customview.presentation.model.DrawingType
-import com.dothebestmayb.customview.presentation.model.Transparent
+import com.dothebestmayb.customview.presentation.ui.paint.model.DrawingInfo
+import com.dothebestmayb.customview.presentation.ui.paint.model.DrawingType
+import com.dothebestmayb.customview.presentation.ui.paint.model.Transparent
 
 class DrawingPaper(context: Context, attrs: AttributeSet) : View(context, attrs) {
 
