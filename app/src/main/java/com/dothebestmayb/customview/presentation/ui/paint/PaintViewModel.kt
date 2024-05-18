@@ -119,7 +119,7 @@ class PaintViewModel : ViewModel() {
     }
 
     private fun checkClickGesture(touchState: TouchState): Boolean =
-        abs(touchState.width) < 10 && abs(touchState.height) < 10
+        touchState.width < 10 && touchState.height < 10
 
     private fun handleClickGesture(x: Float, y: Float) {
         val information = _drawingInfo.value?.toMutableList() ?: return
@@ -149,12 +149,16 @@ class PaintViewModel : ViewModel() {
     }
 
     private fun createNewShape() {
+        val startPoint = Point(
+            x = touchState.getLeftX(),
+            y = touchState.getLeftY(),
+        )
         val shape = DrawingShape(
             size = Size(
                 width = touchState.width,
                 height = touchState.height
             ),
-            point = touchState.start,
+            point = startPoint,
             color = color,
             transparent = transParent,
             type = DrawingType.RECT,
