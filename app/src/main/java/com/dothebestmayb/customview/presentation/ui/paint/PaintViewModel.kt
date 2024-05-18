@@ -71,11 +71,7 @@ class PaintViewModel : ViewModel() {
             Random.nextInt(canvasSize.width - size.width),
             Random.nextInt(canvasSize.height - size.height),
         )
-        val color = DrawingColor(
-            r = Random.nextInt(256).toUByte(),
-            g = Random.nextInt(256).toUByte(),
-            b = Random.nextInt(256).toUByte()
-        )
+        val color = DrawingColor.random(random)
         val transparent = Transparent.entries.random(random)
 
         val drawingShape = DrawingShape(
@@ -103,7 +99,7 @@ class PaintViewModel : ViewModel() {
     }
 
     fun updateTouchMove(pointX: Float, pointY: Float) {
-        touchState = touchState.copy(end=Point(x = pointX.toInt(), y = pointY.toInt()))
+        touchState = touchState.copy(end = Point(x = pointX.toInt(), y = pointY.toInt()))
 
         _tempRect.value = Rect(
             touchState.start.x,
@@ -114,16 +110,19 @@ class PaintViewModel : ViewModel() {
     }
 
     fun updateTouchEndPoint(pointX: Float, pointY: Float) {
-        touchState = touchState.copy(end=Point(x = pointX.toInt(), y = pointY.toInt()))
+        touchState = touchState.copy(end = Point(x = pointX.toInt(), y = pointY.toInt()))
         _tempRect.value = null
-        if (abs(touchState.width) < 10 && abs(touchState.height) < 10) {
-            checkExistingShape(pointY, pointX)
+        if (checkClickGesture(touchState)) {
+            handleClickGesture(pointY, pointX)
         } else {
             createNewShape()
         }
     }
 
-    private fun checkExistingShape(x: Float, y: Float) {
+    private fun checkClickGesture(touchState: TouchState): Boolean =
+        abs(touchState.width) < 10 && abs(touchState.height) < 10
+
+    private fun handleClickGesture(x: Float, y: Float) {
         val information = _drawingInfo.value?.toMutableList() ?: return
         var isFind = false
         for (idx in information.lastIndex downTo 0) {
@@ -260,6 +259,7 @@ class PaintViewModel : ViewModel() {
             _currentVotingItem.value = null
         }
     }
+
     companion object {
         private const val VOTING_TOTAL_TIME = 20_000
     }
