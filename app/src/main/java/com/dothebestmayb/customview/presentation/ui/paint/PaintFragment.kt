@@ -15,6 +15,8 @@ import com.dothebestmayb.customview.presentation.ui.paint.adapter.PaintAdapter
 import com.dothebestmayb.customview.presentation.ui.paint.adapter.VotingAdapter
 import com.dothebestmayb.customview.presentation.ui.paint.model.AlertMessageType
 import com.dothebestmayb.customview.presentation.ui.paint.model.GameType
+import com.dothebestmayb.customview.presentation.ui.paint.model.VotingInfo
+import com.dothebestmayb.customview.presentation.ui.paint.model.VotingState
 
 
 class PaintFragment : Fragment() {
@@ -34,8 +36,11 @@ class PaintFragment : Fragment() {
     }
 
     private fun setGameMode() {
+        // 임의로 값 지정, 실제로는 다른 Fragment로부터 값을 받아야 함
         val gameMode = GameType.MULTI
-        viewModel.setGameType(gameMode)
+        val participantCount = 3
+
+        viewModel.setGameMode(gameMode, participantCount)
         paintAdapter = PaintAdapter(
             gameMode,
             {
@@ -66,6 +71,7 @@ class PaintFragment : Fragment() {
     private fun setRecyclerView() {
         binding.rvItemBoard.adapter = paintAdapter
         binding.voteView.rvVoteStatus.adapter = votingAdapter
+        binding.voteView.rvVoteStatus.itemAnimator = null
     }
 
     private fun setListener() {
@@ -74,6 +80,7 @@ class PaintFragment : Fragment() {
                 viewModel.createRect()
             }
         }
+
         fun side() {
             binding.btnBackgroundColor.setOnClickListener {
                 viewModel.changeSelectShapeColor()
@@ -85,6 +92,7 @@ class PaintFragment : Fragment() {
                 viewModel.changeSelectShapeTransparent(value)
             }
         }
+
         fun paper() {
             binding.drawingPaper.doOnLayout {
                 viewModel.setCanvasSize(binding.drawingPaper.width, binding.drawingPaper.height)
@@ -119,9 +127,19 @@ class PaintFragment : Fragment() {
             }
         }
 
+        fun vote() {
+            binding.voteView.btnAccept.setOnClickListener {
+                viewModel.onVote(VotingState.ACCEPT)
+            }
+            binding.voteView.btnDecline.setOnClickListener {
+                viewModel.onVote(VotingState.DECLINE)
+            }
+        }
+
         bottom()
         side()
         paper()
+        vote()
     }
 
     private fun setObserve() {
@@ -154,23 +172,30 @@ class PaintFragment : Fragment() {
                 Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
             }
         }
-        viewModel.currentVotingItem.observe(viewLifecycleOwner) {
-            if (it == null) {
-                binding.voteView.ivItem.setImageDrawable(null)
-                // RecyclerView 아이템 null처리
-                binding.voteView.btnAccept.isEnabled = false
-                binding.voteView.tvName.text = null
-                binding.voteView.btnDecline.isEnabled = false
-                return@observe
-            }
-            binding.voteView.ivItem.setImageResource(R.drawable.sample_board_item) // TODO : 실제 이미지로 변경
-            binding.voteView.tvName.text = it.shape.name
-            binding.voteView.btnAccept.isEnabled = true
-            binding.voteView.btnDecline.isEnabled = true
+        viewModel.currentVotingItem.observe(viewLifecycleOwner) { votingInfo ->
+            setVotingView(votingInfo)
         }
         viewModel.remainVotingTime.observe(viewLifecycleOwner) {
             binding.voteView.progressRemainingTime.setProgress(it, true)
         }
+    }
+
+    private fun setVotingView(votingInfo: VotingInfo?) = with(binding.voteView) {
+        if (votingInfo == null) {
+            progressRemainingTime.progress = 0
+            ivItem.setImageDrawable(null)
+            tvName.text = null
+            btnAccept.isEnabled = false
+            btnDecline.isEnabled = false
+            votingAdapter.submitList(null)
+            return
+        }
+        ivItem.setImageResource(R.drawable.sample_board_item) // TODO : 실제 이미지로 변경
+        tvName.text = votingInfo.drawingInfo.shape.name
+        btnAccept.isEnabled = true
+        btnDecline.isEnabled = true
+
+        votingAdapter.submitList(votingInfo.votingStates)
     }
 
     override fun onDestroyView() {

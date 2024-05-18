@@ -17,9 +17,12 @@ import com.dothebestmayb.customview.presentation.ui.paint.model.Size
 import com.dothebestmayb.customview.presentation.ui.paint.model.Transparent
 import com.dothebestmayb.customview.presentation.ui.paint.model.GameType
 import com.dothebestmayb.customview.presentation.ui.paint.model.TouchState
+import com.dothebestmayb.customview.presentation.ui.paint.model.VotingInfo
+import com.dothebestmayb.customview.presentation.ui.paint.model.VotingResult
+import com.dothebestmayb.customview.presentation.ui.paint.model.VotingState
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlin.math.abs
 import kotlin.random.Random
 
 class PaintViewModel : ViewModel() {
@@ -46,8 +49,8 @@ class PaintViewModel : ViewModel() {
     val selectedDrawingInfo: LiveData<DrawingInfo?>
         get() = _selectedDrawingInfo
 
-    private val _currentVotingItem = MutableLiveData<DrawingInfo?>()
-    val currentVotingItem: LiveData<DrawingInfo?>
+    private val _currentVotingItem = MutableLiveData<VotingInfo?>()
+    val currentVotingItem: LiveData<VotingInfo?>
         get() = _currentVotingItem
 
     private val _alertMessage = MutableLiveData<Event<AlertMessageType>>()
@@ -59,9 +62,13 @@ class PaintViewModel : ViewModel() {
         get() = _remainVotingTime
 
     private var gameType: GameType = GameType.SINGLE
+    private var participantCount: Int = 1
 
-    fun setGameType(type: GameType) {
+    private var votingTimerJob: Job? = null
+
+    fun setGameMode(type: GameType, participantCount: Int) {
         gameType = type
+        this.participantCount = participantCount
     }
 
     fun createRect() {
@@ -247,13 +254,13 @@ class PaintViewModel : ViewModel() {
     }
 
     fun addVoteItem(drawingInfo: DrawingInfo) {
-        when(gameType) {
-            GameType.SINGLE -> handleSingleModeVoting(drawingInfo)
+        when (gameType) {
+            GameType.SINGLE -> removeItem(drawingInfo)
             GameType.MULTI -> handleMultiModeVoting(drawingInfo)
         }
     }
 
-    private fun handleSingleModeVoting(drawingInfo: DrawingInfo) {
+    private fun removeItem(drawingInfo: DrawingInfo) {
         val drawings = _drawingInfo.value?.toMutableList() ?: return
         drawings.remove(drawingInfo)
         _drawingInfo.value = drawings
@@ -268,8 +275,15 @@ class PaintViewModel : ViewModel() {
             _alertMessage.value = Event(AlertMessageType.VOTING_IS_UNDERWAY)
             return
         }
-        _currentVotingItem.value = drawingInfo
-        viewModelScope.launch {
+        votingTimerJob?.cancel()
+        _currentVotingItem.value = VotingInfo(
+            drawingInfo,
+            List(participantCount) {
+                VotingState.NOT_YET
+            },
+        )
+
+        votingTimerJob = viewModelScope.launch {
             var count = VOTING_TOTAL_TIME
             while (count > 0) {
                 delay(100)
@@ -278,6 +292,38 @@ class PaintViewModel : ViewModel() {
             }
             _currentVotingItem.value = null
         }
+    }
+
+    fun onVote(state: VotingState) {
+        val votingItem = _currentVotingItem.value ?: return
+        val states = votingItem.votingStates.toMutableList()
+        val idx = states.indexOfFirst {
+            it == VotingState.NOT_YET
+        }
+        if (idx == -1) {
+            return
+        }
+        states[idx] = state
+        val newVotingItem = votingItem.copy(
+            votingStates = states
+        )
+
+        // 과반수 넘었는지 확인
+        val res = when (newVotingItem.checkMajority()) {
+            VotingResult.ACCEPT -> {
+                removeItem(newVotingItem.drawingInfo)
+                votingTimerJob?.cancel()
+                null
+            }
+            VotingResult.DECLINE -> {
+                votingTimerJob?.cancel()
+                null
+            }
+            VotingResult.YET -> {
+                newVotingItem
+            }
+        }
+        _currentVotingItem.value = res
     }
 
     companion object {
