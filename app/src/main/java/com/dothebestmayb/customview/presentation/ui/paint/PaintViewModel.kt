@@ -27,7 +27,6 @@ class PaintViewModel : ViewModel() {
 
     private val random = Random(System.currentTimeMillis())
 
-    // 아래 정보를 Data class로 모델링해서 가지고 있기
     private var canvasSize: Size = Size.Empty
     private var touchState = TouchState.Empty
 
@@ -244,6 +243,23 @@ class PaintViewModel : ViewModel() {
     }
 
     fun addVoteItem(drawingInfo: DrawingInfo) {
+        when(gameType) {
+            GameType.SINGLE -> handleSingleModeVoting(drawingInfo)
+            GameType.MULTI -> handleMultiModeVoting(drawingInfo)
+        }
+    }
+
+    private fun handleSingleModeVoting(drawingInfo: DrawingInfo) {
+        val drawings = _drawingInfo.value?.toMutableList() ?: return
+        drawings.remove(drawingInfo)
+        _drawingInfo.value = drawings
+
+        if (_selectedDrawingInfo.value == drawingInfo) {
+            _selectedDrawingInfo.value = null
+        }
+    }
+
+    private fun handleMultiModeVoting(drawingInfo: DrawingInfo) {
         if (_currentVotingItem.value != null) {
             _alertMessage.value = Event(AlertMessageType.VOTING_IS_UNDERWAY)
             return

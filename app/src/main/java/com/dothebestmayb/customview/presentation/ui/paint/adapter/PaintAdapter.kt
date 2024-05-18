@@ -5,17 +5,21 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
+import com.dothebestmayb.customview.R
 import com.dothebestmayb.customview.databinding.ItemForBoardBinding
 import com.dothebestmayb.customview.presentation.ui.paint.model.DrawingInfo
 import com.dothebestmayb.customview.presentation.ui.paint.model.DrawingType
+import com.dothebestmayb.customview.presentation.ui.paint.model.GameType
 
 class PaintAdapter(
+    private val gameType: GameType,
     private val onItemClick: (DrawingInfo) -> Unit,
     private val onVoteClick: (DrawingInfo) -> Unit,
 ) : ListAdapter<DrawingInfo, ViewHolder>(diff) {
 
     class RectViewHolder(
         private val binding: ItemForBoardBinding,
+        gameType: GameType,
         private val onItemClick: (DrawingInfo) -> Unit,
         private val onVoteClick: (DrawingInfo) -> Unit,
     ) : ViewHolder(binding.root) {
@@ -26,6 +30,13 @@ class PaintAdapter(
             binding.root.setOnClickListener {
                 onItemClick(drawingInfo)
             }
+
+            val res = when(gameType) {
+                GameType.SINGLE -> R.drawable.baseline_close_24
+                GameType.MULTI -> R.drawable.baseline_how_to_vote_24
+            }
+            binding.btnVote.setImageResource(res)
+
         }
 
         fun bind(drawingInfo: DrawingInfo.DrawingRectInfo, order: Int) {
@@ -48,6 +59,7 @@ class PaintAdapter(
             DrawingType.LINE -> TODO()
             DrawingType.RECT -> RectViewHolder(
                 ItemForBoardBinding.inflate(LayoutInflater.from(parent.context), parent, false),
+                gameType,
                 onItemClick,
                 onVoteClick,
             )

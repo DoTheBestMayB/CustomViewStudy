@@ -14,6 +14,7 @@ import com.dothebestmayb.customview.databinding.FragmentPaintBinding
 import com.dothebestmayb.customview.presentation.ui.paint.adapter.PaintAdapter
 import com.dothebestmayb.customview.presentation.ui.paint.adapter.VotingAdapter
 import com.dothebestmayb.customview.presentation.ui.paint.model.AlertMessageType
+import com.dothebestmayb.customview.presentation.ui.paint.model.GameType
 
 
 class PaintFragment : Fragment() {
@@ -23,17 +24,27 @@ class PaintFragment : Fragment() {
         get() = _binding!!
 
     private val viewModel: PaintViewModel by viewModels()
-    private val paintAdapter = PaintAdapter({
-        viewModel.onClick(it)
-    }, {
-        viewModel.addVoteItem(it)
-    })
+    private lateinit var paintAdapter: PaintAdapter
     private val votingAdapter = VotingAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-//        viewModel.setGameType(GameType.SINGLE)
+        setGameMode()
+    }
+
+    private fun setGameMode() {
+        val gameMode = GameType.SINGLE
+        viewModel.setGameType(gameMode)
+        paintAdapter = PaintAdapter(
+            gameMode,
+            {
+                viewModel.onClick(it)
+            },
+            {
+                viewModel.addVoteItem(it)
+            }
+        )
     }
 
     override fun onCreateView(
