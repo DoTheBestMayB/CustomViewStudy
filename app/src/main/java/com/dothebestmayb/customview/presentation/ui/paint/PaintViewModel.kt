@@ -1,6 +1,7 @@
 package com.dothebestmayb.customview.presentation.ui.paint
 
 import android.graphics.Rect
+import android.util.Log
 import androidx.annotation.FloatRange
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -232,12 +233,15 @@ class PaintViewModel : ViewModel() {
     }
 
     fun onClick(drawingInfo: DrawingInfo) {
+        // 현재 선택된 아이템과 동일하면 무시
+        if (_selectedDrawingInfo.value == drawingInfo) {
+            return
+        }
         val information = _drawingInfo.value?.toMutableList() ?: return
 
         for (idx in information.indices) {
             val item = information[idx]
-            val clicked = item == drawingInfo
-
+            val clicked = item.shape.id == drawingInfo.shape.id
             val newItem = when (item) {
                 is DrawingInfo.DrawingRectInfo -> item.copy(
                     shape = item.shape.copy(
