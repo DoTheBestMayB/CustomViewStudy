@@ -34,7 +34,7 @@ class PaintFragment : Fragment() {
     }
 
     private fun setGameMode() {
-        val gameMode = GameType.SINGLE
+        val gameMode = GameType.MULTI
         viewModel.setGameType(gameMode)
         paintAdapter = PaintAdapter(
             gameMode,
@@ -69,48 +69,59 @@ class PaintFragment : Fragment() {
     }
 
     private fun setListener() {
-        binding.drawingPaper.doOnLayout {
-            viewModel.setCanvasSize(binding.drawingPaper.width, binding.drawingPaper.height)
-        }
-        binding.btnAddRect.setOnClickListener {
-            viewModel.createRect()
-        }
-        binding.drawingPaper.setOnTouchListener { v, event ->
-            if (event == null) {
-                return@setOnTouchListener false
+        fun bottom() {
+            binding.btnAddRect.setOnClickListener {
+                viewModel.createRect()
             }
-            val pointX = event.x
-            val pointY = event.y
-
-            when (event.action) {
-                MotionEvent.ACTION_DOWN -> {
-                    viewModel.updateTouchStartPoint(pointX, pointY)
+        }
+        fun side() {
+            binding.btnBackgroundColor.setOnClickListener {
+                viewModel.changeSelectShapeColor()
+            }
+            binding.sliderTransparent.addOnChangeListener { slider, value, fromUser ->
+                if (fromUser.not()) {
+                    return@addOnChangeListener
                 }
+                viewModel.changeSelectShapeTransparent(value)
+            }
+        }
+        fun paper() {
+            binding.drawingPaper.doOnLayout {
+                viewModel.setCanvasSize(binding.drawingPaper.width, binding.drawingPaper.height)
+            }
 
-                MotionEvent.ACTION_MOVE -> {
-                    viewModel.updateTouchMove(pointX, pointY)
-                }
-
-                MotionEvent.ACTION_UP -> {
-                    binding.drawingPaper.performClick()
-                    viewModel.updateTouchEndPoint(pointX, pointY)
-                }
-
-                else -> {
+            binding.drawingPaper.setOnTouchListener { v, event ->
+                if (event == null) {
                     return@setOnTouchListener false
                 }
+                val pointX = event.x
+                val pointY = event.y
+
+                when (event.action) {
+                    MotionEvent.ACTION_DOWN -> {
+                        viewModel.updateTouchStartPoint(pointX, pointY)
+                    }
+
+                    MotionEvent.ACTION_MOVE -> {
+                        viewModel.updateTouchMove(pointX, pointY)
+                    }
+
+                    MotionEvent.ACTION_UP -> {
+                        binding.drawingPaper.performClick()
+                        viewModel.updateTouchEndPoint(pointX, pointY)
+                    }
+
+                    else -> {
+                        return@setOnTouchListener false
+                    }
+                }
+                return@setOnTouchListener true
             }
-            return@setOnTouchListener true
         }
-        binding.btnBackgroundColor.setOnClickListener {
-            viewModel.changeSelectShapeColor()
-        }
-        binding.sliderTransparent.addOnChangeListener { slider, value, fromUser ->
-            if (fromUser.not()) {
-                return@addOnChangeListener
-            }
-            viewModel.changeSelectShapeTransparent(value)
-        }
+
+        bottom()
+        side()
+        paper()
     }
 
     private fun setObserve() {
