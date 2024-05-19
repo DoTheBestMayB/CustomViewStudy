@@ -1,7 +1,6 @@
 package com.dothebestmayb.customview.presentation.ui.paint
 
 import android.graphics.Rect
-import android.util.Log
 import androidx.annotation.FloatRange
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -121,7 +120,9 @@ class PaintViewModel : ViewModel() {
         touchState = touchState.copy(end = Point(x = pointX.toInt(), y = pointY.toInt()))
         _tempRect.value = null
         if (checkClickGesture(touchState)) {
-            handleClickGesture(pointX, pointY)
+            identifyClickedItem() {
+                it.shape.isClicked(pointX.toInt(), pointY.toInt())
+            }
         } else {
             createNewShape()
         }
@@ -130,7 +131,7 @@ class PaintViewModel : ViewModel() {
     private fun checkClickGesture(touchState: TouchState): Boolean =
         touchState.width < 10 && touchState.height < 10
 
-    private fun handleClickGesture(x: Float, y: Float) {
+    private fun identifyClickedItem(clickedCondition: (DrawingInfo) -> Boolean) {
         val information = _drawingInfo.value?.toMutableList() ?: return
         var isFind = false
         for (idx in information.lastIndex downTo 0) {
@@ -141,7 +142,7 @@ class PaintViewModel : ViewModel() {
                         information[idx] = new
                         continue
                     }
-                    val clicked = drawingInfo.shape.isClicked(x.toInt(), y.toInt())
+                    val clicked = clickedCondition(drawingInfo)
                     val new = drawingInfo.copy(shape = drawingInfo.shape.copy(clicked = clicked))
                     information[idx] = new
                     if (clicked) {
@@ -190,6 +191,9 @@ class PaintViewModel : ViewModel() {
         }
         information.add(info)
         _drawingInfo.value = information
+        identifyClickedItem {
+            it == info
+        }
     }
 
     fun setCanvasSize(width: Int, height: Int) {
