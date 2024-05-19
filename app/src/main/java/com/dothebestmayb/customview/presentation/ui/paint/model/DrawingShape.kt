@@ -10,7 +10,7 @@ data class DrawingShape(
     val type: DrawingType,
     val clicked: Boolean = false,
     val id: String = UUID.randomUUID().toString(),
-    val name: String = id,
+    val name: String = "이름 미지정",
 ) {
     override fun toString(): String {
         return "${this.javaClass.simpleName} ($id), $point, $size, $color, $transparent"

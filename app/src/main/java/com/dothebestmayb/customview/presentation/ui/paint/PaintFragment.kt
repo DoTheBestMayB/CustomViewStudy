@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.view.doOnLayout
+import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.dothebestmayb.customview.R
@@ -91,6 +92,16 @@ class PaintFragment : Fragment() {
                 }
                 viewModel.changeSelectShapeTransparent(value)
             }
+            binding.edtName.doOnTextChanged { text, _, _, _ ->
+                val isValueChangedByUser = binding.edtName.hasFocus()
+                if (isValueChangedByUser.not()) {
+                    return@doOnTextChanged
+                }
+                viewModel.updateName(text.toString())
+            }
+            binding.btnChangeName.setOnClickListener {
+                viewModel.changeName()
+            }
         }
 
         fun paper() {
@@ -117,6 +128,7 @@ class PaintFragment : Fragment() {
                     MotionEvent.ACTION_UP -> {
                         binding.drawingPaper.performClick()
                         viewModel.updateTouchEndPoint(pointX, pointY)
+
                     }
 
                     else -> {
@@ -153,8 +165,8 @@ class PaintFragment : Fragment() {
         viewModel.selectedDrawingInfo.observe(viewLifecycleOwner) {
             if (it == null) {
                 binding.btnBackgroundColor.isEnabled = false
-                binding.sliderTransparent.isEnabled = false
                 binding.btnBackgroundColor.text = null
+                binding.sliderTransparent.isEnabled = false
                 binding.sliderTransparent.value = 5f
                 return@observe
             }
@@ -163,11 +175,13 @@ class PaintFragment : Fragment() {
             binding.sliderTransparent.value = it.shape.transparent.indicatorValue.toFloat()
             binding.btnBackgroundColor.isEnabled = true
             binding.sliderTransparent.isEnabled = true
+            binding.edtName.setText(it.shape.name)
         }
         viewModel.alertMessage.observe(viewLifecycleOwner) { event ->
             event.getContentIfNotHandled()?.let {
                 val message = when (it) {
                     AlertMessageType.VOTING_IS_UNDERWAY -> getString(R.string.vote_is_already_underway)
+                    AlertMessageType.CHANGING_VOTING_ITEM_IS_NOT_ALLOWED -> getString(R.string.changing_voting_item_is_not_allowed)
                 }
                 Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
             }

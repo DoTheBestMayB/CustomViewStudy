@@ -66,6 +66,7 @@ class PaintViewModel : ViewModel() {
     private var participantCount: Int = 1
 
     private var votingTimerJob: Job? = null
+    private var drawingInfoName: String = ""
 
     fun setGameMode(type: GameType, participantCount: Int) {
         gameType = type
@@ -170,6 +171,7 @@ class PaintViewModel : ViewModel() {
             color = color,
             transparent = transParent,
             type = DrawingType.RECT,
+            name = drawingInfoName
         )
         val information = _drawingInfo.value?.toMutableList() ?: mutableListOf()
         val info = when (drawingType) {
@@ -319,15 +321,55 @@ class PaintViewModel : ViewModel() {
                 votingTimerJob?.cancel()
                 null
             }
+
             VotingResult.DECLINE -> {
                 votingTimerJob?.cancel()
                 null
             }
+
             VotingResult.YET -> {
                 newVotingItem
             }
         }
         _currentVotingItem.value = res
+    }
+
+    fun updateName(newName: String) {
+        drawingInfoName = newName
+    }
+
+    fun changeName() {
+        val currentDrawingInfo = _selectedDrawingInfo.value ?: return
+        if (currentDrawingInfo.shape.name == drawingInfoName) {
+            return
+        }
+
+        val votingItem = _currentVotingItem.value?.drawingInfo
+        // 투표 중인 아이템은 이름을 변경할 수 없도록 설정
+        if (votingItem == currentDrawingInfo) {
+            _alertMessage.value = Event(AlertMessageType.CHANGING_VOTING_ITEM_IS_NOT_ALLOWED)
+            return
+        }
+
+        // 현재 선택한 아이템의 이름을 변경
+        val newDrawingInfo = when (currentDrawingInfo) {
+            is DrawingInfo.DrawingRectInfo -> currentDrawingInfo.copy(
+                shape = currentDrawingInfo.shape.copy(
+                    name = drawingInfoName
+                )
+            )
+        }
+        _selectedDrawingInfo.value = newDrawingInfo
+
+        val drawings = _drawingInfo.value?.toMutableList() ?: return
+        val idx = drawings.indexOfFirst {
+            it == currentDrawingInfo
+        }
+        if (idx == -1) {
+            return
+        }
+        drawings[idx] = newDrawingInfo
+        _drawingInfo.value = drawings
     }
 
     companion object {

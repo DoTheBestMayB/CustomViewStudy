@@ -13,4 +13,7 @@
     <string name="vote_is_already_underway">현재 진행 중인 투표가 있습니다.</string>
     <string name="accept">찬성</string>
     <string name="decline">반대</string>
+    <string name="drawing_name_header">이름</string>
+    <string name="changing_voting_item_is_not_allowed">투표 중인 아이템의 이름은 변경할 수 없습니다.</string>
+    <string name="change_name">이름 변경</string>
 </resources>

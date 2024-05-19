@@ -34,8 +34,8 @@
         android:layout_height="wrap_content"
         android:background="@drawable/border_for_board_item"
         android:gravity="center"
-        android:text="@string/packing_item"
         android:paddingVertical="3dp"
+        android:text="@string/packing_item"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="@id/guideline_vote"
         app:layout_constraintStart_toStartOf="parent"
@@ -177,4 +177,47 @@
         app:layout_constraintTop_toBottomOf="@id/tv_transparent"
         app:thumbHeight="28dp"
         app:trackColor="@color/saintSoftBlue" />
+
+    <TextView
+        android:id="@+id/tv_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="18dp"
+        android:text="@string/drawing_name_header"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@id/v_side"
+        app:layout_constraintTop_toBottomOf="@id/slider_transparent" />
+
+    <EditText
+        android:id="@+id/edt_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:inputType="text"
+        android:maxLength="10"
+        android:maxLines="1"
+        android:layout_marginHorizontal="12dp"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/guideline_side"
+        app:layout_constraintTop_toBottomOf="@id/tv_name"
+        tools:text="농심 신라면 너구리 dummy dummy dummy " />
+
+    <Button
+        android:id="@+id/btn_change_name"
+        android:layout_width="0dp"
+        android:backgroundTint="@color/border"
+        style="@style/BottomButtonStyle"
+        app:shapeAppearanceOverlay="@style/no_rounded"
+        android:layout_height="wrap_content"
+        android:text="@string/change_name"
+        android:textSize="18sp"
+        android:layout_marginHorizontal="12dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/guideline_side"
+        app:layout_constraintTop_toBottomOf="@id/edt_name" />
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>
