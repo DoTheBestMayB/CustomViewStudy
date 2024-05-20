@@ -155,7 +155,7 @@ class PaintFragment : Fragment() {
     }
 
     private fun setObserve() {
-        viewModel.tempRect.observe(viewLifecycleOwner) {
+        viewModel.inProgressDrawing.observe(viewLifecycleOwner) {
             binding.drawingPaper.drawTemp(it)
         }
         viewModel.drawingInfo.observe(viewLifecycleOwner) {
@@ -164,10 +164,6 @@ class PaintFragment : Fragment() {
         }
         viewModel.selectedDrawingInfo.observe(viewLifecycleOwner) {
             if (it == null) {
-                binding.btnBackgroundColor.isEnabled = false
-                binding.btnBackgroundColor.text = null
-                binding.sliderTransparent.isEnabled = false
-                binding.sliderTransparent.value = 5f
                 return@observe
             }
             binding.btnBackgroundColor.setTextColor(it.shape.color.colorValue)
@@ -191,6 +187,9 @@ class PaintFragment : Fragment() {
         }
         viewModel.remainVotingTime.observe(viewLifecycleOwner) {
             binding.voteView.progressRemainingTime.setProgress(it, true)
+        }
+        viewModel.color.observe(viewLifecycleOwner) {
+            binding.btnBackgroundColor.text = it.toString()
         }
     }
 

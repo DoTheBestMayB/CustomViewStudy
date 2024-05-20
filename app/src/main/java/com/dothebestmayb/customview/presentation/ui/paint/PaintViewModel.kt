@@ -12,11 +12,11 @@ import com.dothebestmayb.customview.presentation.ui.paint.model.DrawingInfo
 import com.dothebestmayb.customview.presentation.ui.paint.model.DrawingShape
 import com.dothebestmayb.customview.presentation.ui.paint.model.DrawingType
 import com.dothebestmayb.customview.presentation.ui.paint.model.Event
+import com.dothebestmayb.customview.presentation.ui.paint.model.GameType
 import com.dothebestmayb.customview.presentation.ui.paint.model.Point
 import com.dothebestmayb.customview.presentation.ui.paint.model.Size
-import com.dothebestmayb.customview.presentation.ui.paint.model.Transparent
-import com.dothebestmayb.customview.presentation.ui.paint.model.GameType
 import com.dothebestmayb.customview.presentation.ui.paint.model.TouchState
+import com.dothebestmayb.customview.presentation.ui.paint.model.Transparent
 import com.dothebestmayb.customview.presentation.ui.paint.model.VotingInfo
 import com.dothebestmayb.customview.presentation.ui.paint.model.VotingResult
 import com.dothebestmayb.customview.presentation.ui.paint.model.VotingState
@@ -33,13 +33,19 @@ class PaintViewModel : ViewModel() {
     private var canvasSize: Size = Size.Empty
     private var touchState = TouchState.Empty
 
-    private var color = DrawingColor(0u, 0u, 0u)
-    private var transParent = Transparent.TEN
+    private var _color = MutableLiveData(DrawingColor.DEFAULT)
+    val color: LiveData<DrawingColor>
+        get() = _color
+
+    private var _transParent = MutableLiveData(Transparent.TEN)
+    val transParent: LiveData<Transparent>
+        get() = _transParent
+
     private var drawingType = DrawingType.RECT
 
-    private val _tempRect = MutableLiveData<Rect?>()
-    val tempRect: LiveData<Rect?>
-        get() = _tempRect
+    private val _inProgressDrawing = MutableLiveData<DrawingInfo?>()
+    val inProgressDrawing: LiveData<DrawingInfo?>
+        get() = _inProgressDrawing
 
     private val _drawingInfo = MutableLiveData<List<DrawingInfo>>()
     val drawingInfo: LiveData<List<DrawingInfo>>
@@ -103,22 +109,50 @@ class PaintViewModel : ViewModel() {
             start = Point(x = pointX.toInt(), y = pointY.toInt()),
             end = Point.Empty,
         )
+        val color = _color.value ?: DrawingColor.DEFAULT
+        val transparent = _transParent.value ?: Transparent.TEN
+
+        _inProgressDrawing.value = DrawingInfo.DrawingRectInfo(
+            shape = DrawingShape(
+                size = Size(
+                    width = 0,
+                    height = 0
+                ),
+                point = Point(
+                    x = pointX.toInt(),
+                    y = pointY.toInt()
+                ),
+                color = color, transparent = transparent, type = DrawingType.RECT, clicked = false,
+                name = drawingInfoName,
+            ),
+            rect = Rect(
+                touchState.start.x,
+                touchState.start.y,
+                touchState.start.x,
+                touchState.start.y,
+            )
+        )
     }
 
     fun updateTouchMove(pointX: Float, pointY: Float) {
         touchState = touchState.copy(end = Point(x = pointX.toInt(), y = pointY.toInt()))
+        val drawingInfo = _inProgressDrawing.value ?: return
 
-        _tempRect.value = Rect(
-            touchState.start.x,
-            touchState.start.y,
-            touchState.end.x,
-            touchState.end.y
-        )
+        _inProgressDrawing.value = when (drawingInfo) {
+            is DrawingInfo.DrawingRectInfo -> {
+                drawingInfo.rect.set(
+                    touchState.start.x,
+                    touchState.start.y,
+                    touchState.end.x,
+                    touchState.end.y
+                )
+                drawingInfo
+            }
+        }
     }
 
     fun updateTouchEndPoint(pointX: Float, pointY: Float) {
         touchState = touchState.copy(end = Point(x = pointX.toInt(), y = pointY.toInt()))
-        _tempRect.value = null
         if (checkClickGesture(touchState)) {
             identifyClickedItem() {
                 it.shape.isClicked(pointX.toInt(), pointY.toInt())
@@ -126,6 +160,7 @@ class PaintViewModel : ViewModel() {
         } else {
             createNewShape()
         }
+        _inProgressDrawing.value = null
     }
 
     private fun checkClickGesture(touchState: TouchState): Boolean =
@@ -163,17 +198,14 @@ class PaintViewModel : ViewModel() {
             x = touchState.getLeftX(),
             y = touchState.getLeftY(),
         )
-        val shape = DrawingShape(
+        val shape = _inProgressDrawing.value?.shape?.copy(
             size = Size(
                 width = touchState.width,
                 height = touchState.height
             ),
             point = startPoint,
-            color = color,
-            transparent = transParent,
-            type = DrawingType.RECT,
-            name = drawingInfoName
-        )
+        ) ?: return
+
         val information = _drawingInfo.value?.toMutableList() ?: mutableListOf()
         val info = when (drawingType) {
             DrawingType.LINE -> TODO()
@@ -201,6 +233,9 @@ class PaintViewModel : ViewModel() {
     }
 
     fun changeSelectShapeColor() {
+        val color = DrawingColor.random(random)
+        _color.value = color
+
         val information = _drawingInfo.value?.toMutableList() ?: return
         val selectedDrawing = _selectedDrawingInfo.value ?: return
 
@@ -210,7 +245,7 @@ class PaintViewModel : ViewModel() {
         val newDrawing = when (selectedDrawing) {
             is DrawingInfo.DrawingRectInfo -> selectedDrawing.copy(
                 shape = selectedDrawing.shape.copy(
-                    color = DrawingColor.random(random)
+                    color = color
                 )
             )
         }
@@ -220,16 +255,21 @@ class PaintViewModel : ViewModel() {
     }
 
     fun changeSelectShapeTransparent(@FloatRange(1.0, 10.0) value: Float) {
+        val transparent = Transparent.from(value.toInt())
+        _transParent.value = transparent
+
         val information = _drawingInfo.value?.toMutableList() ?: return
         val selectedDrawing = _selectedDrawingInfo.value ?: return
-
         val idx = information.indexOfFirst {
             it == selectedDrawing
+        }
+        if (idx == -1) {
+            return
         }
         val newDrawing = when (selectedDrawing) {
             is DrawingInfo.DrawingRectInfo -> selectedDrawing.copy(
                 shape = selectedDrawing.shape.copy(
-                    transparent = Transparent.from(value.toInt())
+                    transparent = transparent
                 )
             )
         }

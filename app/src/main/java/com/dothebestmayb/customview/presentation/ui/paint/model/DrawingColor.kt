@@ -15,6 +15,7 @@ data class DrawingColor(
     }
 
     companion object {
+        val DEFAULT = DrawingColor(0u, 0u, 0u)
         fun random(random: Random) = DrawingColor(
             r = random.nextInt(256).toUByte(),
             g = random.nextInt(256).toUByte(),

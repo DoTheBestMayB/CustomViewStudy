@@ -47,9 +47,19 @@ class DrawingPaper(context: Context, attrs: AttributeSet) : View(context, attrs)
         }
     }
 
-    fun drawTemp(rect: Rect?) {
-        tempRect = rect
-        if (rect != null) {
+    fun drawTemp(drawingInfo: DrawingInfo?) {
+        if (drawingInfo == null) {
+            tempRect = null
+            return
+        }
+        tempRect = when (drawingInfo) {
+            is DrawingInfo.DrawingRectInfo -> {
+                color = drawingInfo.shape.color.colorValue
+                alpha = drawingInfo.shape.transparent
+                drawingInfo.rect
+            }
+        }
+        if (tempRect != null) {
             invalidate()
         }
     }
