@@ -7,7 +7,7 @@
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragment_container_view_tag"
-        android:name="com.dothebestmayb.customview.presentation.ui.paint.PaintFragment"
+        android:name="com.dothebestmayb.customview.presentation.ui.dashedline.DashedLineFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
